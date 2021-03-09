@@ -58,7 +58,7 @@ class DQNReg(DQN):
             gamma,
             train_freq,
             gradient_steps,
-            action_noise=None,  # No action noise
+            #action_noise=None,  # No action noise
             policy_kwargs=policy_kwargs,
             tensorboard_log=tensorboard_log,
             verbose=verbose,
