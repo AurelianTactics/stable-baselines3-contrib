@@ -3,7 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 import gym
 import numpy as np
 import torch as th
-from torch.nn import functional as F
+#from torch.nn import functional as F
 
 from stable_baselines3.dqn import DQN
 from stable_baselines3.dqn.policies import DQNPolicy
