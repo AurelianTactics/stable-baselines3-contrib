@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 import gym
 import numpy as np
 import torch as th
-from torch.nn import functional as F
 
 from stable_baselines3.dqn import DQN
 from stable_baselines3.dqn.policies import DQNPolicy
@@ -12,12 +11,11 @@ from stable_baselines3.common import logger
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
 
 
-class DQNClippedReg(DQN):
+class DQNReg(DQN):
     """
-    DQNClippedReg adds functions DQNClipped and DQNReg from paper: https://arxiv.org/abs/2101.03958
-    Additional hyperparameters
-    :param loss_type: Use standard Huber loss or custom loss function (0: standard , 2: DQN Clipped, 3: DQN Reg)
-    :param dqn_reg_loss_weight: If using dqn_reg_loss, weight regularization to use. Defaults to 0.1
+    DQNReg adds DQNReg algorithm from paper: https://arxiv.org/abs/2101.03958
+    Is a simple modification of DQN Loss function that replaces the Huber/MSE loss typically used in DQN
+    :param dqn_reg_loss_weight: Weight regularization to use. Defaults to 0.1. Paper hypothesizes that some envs may benefit from tuning this.
     """
 
     def __init__(
@@ -44,12 +42,11 @@ class DQNClippedReg(DQN):
         verbose: int = 0,
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
-        loss_type: int = 0,
         dqn_reg_loss_weight: float = 0.1,
         _init_setup_model: bool = True,
     ):
 
-        super(DQNClippedReg, self).__init__(
+        super(DQNReg, self).__init__(
             policy,
             env,
             DQNPolicy,
@@ -83,11 +80,8 @@ class DQNClippedReg(DQN):
         # Linear schedule will be defined in `_setup_model()`
         self.exploration_schedule = None
         self.q_net, self.q_net_target = None, None
-        # parameters for DQN Clipped and DQN Reg Losses
-        self.loss_type = loss_type # 1 for DQN Clipped Loss, 2 for DQN Reg Loss, else standard huber loss
+        # parameters for DQNReg
         self.dqn_reg_loss_weight = dqn_reg_loss_weight
-        self.DQN_CLIPPED_LOSS_CONSTANT = 2
-        self.DQN_REG_LOSS_CONSTANT = 3
 
         if _init_setup_model:
             self._setup_model()
@@ -117,14 +111,8 @@ class DQNClippedReg(DQN):
             # Retrieve the q-values for the actions from the replay buffer
             current_q_values = th.gather(current_q_values, dim=1, index=replay_data.actions.long())
 
-            if self.loss_type == self.DQN_CLIPPED_LOSS_CONSTANT:
-                loss = self.dqn_clipped_loss(current_q_values, target_q_values, next_q_values, self.gamma)
-            elif self.loss_type == self.DQN_REG_LOSS_CONSTANT:
-                loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
-            else:
-                # standard DQN
-                # Compute Huber loss (less sensitive to outliers)
-                loss = F.smooth_l1_loss(current_q_values, target_q_values)
+            # Compute DQNReg loss
+            loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
             losses.append(loss.item())
 
             # Optimize the policy
@@ -140,24 +128,8 @@ class DQNClippedReg(DQN):
         logger.record("train/n_updates", self._n_updates, exclude="tensorboard")
         logger.record("train/loss", np.mean(losses))
 
-    def dqn_clipped_loss(self, current_q, target_q, target_q_a_max, gamma):
-        """
-        Custom loss function per paper: https://arxiv.org/abs/2101.03958
-        In DQN, replaces Huber/MSE loss between train and target network
-        :param current_q: Q(st, at) of training network
-        :param target_q: Max Q value from the target network, including the reward and gamma. r + gamma * Q_target(st+1,a)
-        :param target_q_a_max: Q_target(st+1, a) where a is the action of the max Q value
-        :param gamma: the discount factor
-        """
-        # loss = max[current_q, delta^2 + target_q] + max[delta,gamma*(target_q_a_max)^2]
-        delta = current_q - target_q
-        left_max = th.max(current_q, th.pow(delta, 2) + target_q)
-        right_max = th.max(delta, gamma * th.pow(target_q_a_max, 2))
-        loss = th.mean(left_max + right_max)
-
-        return loss
-
-    def dqn_reg_loss(self, current_q, target_q, weight=0.1):
+    @staticmethod
+    def dqn_reg_loss(current_q, target_q, weight=0.1):
         """
         Custom loss function per paper: https://arxiv.org/abs/2101.03958
         In DQN, replaces Huber/MSE loss between train and target network
