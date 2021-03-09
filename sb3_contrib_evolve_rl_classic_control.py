@@ -64,7 +64,6 @@ if env_name == 'MountainCar-v0':
                     exploration_fraction=exploration_fraction,
                     buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
                     tensorboard_log=tensorboard_log, verbose=1,
-                    loss_type=loss_type,
                     batch_size=batch_size, learning_rate=learning_rate, gamma=gamma, gradient_steps=gradient_steps,
                     exploration_final_eps=exploration_final_eps)
     elif loss_type == 3:
@@ -72,20 +71,24 @@ if env_name == 'MountainCar-v0':
                           exploration_fraction=exploration_fraction,
                           buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
                           tensorboard_log=tensorboard_log, verbose=1,
-                          loss_type=loss_type, dqn_reg_loss_weight=dqn_reg_loss_weight,
+                          dqn_reg_loss_weight=dqn_reg_loss_weight,
                           batch_size=batch_size, learning_rate=learning_rate, gamma=gamma,
                           gradient_steps=gradient_steps,
                           exploration_final_eps=exploration_final_eps)
 
 else:
     if loss_type == 2:
-        model = DQNClipped(MlpPolicy, env, policy_kwargs=policy_kwargs, target_update_interval=target_update_interval, exploration_fraction=exploration_fraction,
-                    buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed, tensorboard_log=tensorboard_log, verbose=1,
-                    loss_type=loss_type)
+        model = DQNClipped(MlpPolicy, env, policy_kwargs=policy_kwargs, target_update_interval=target_update_interval,
+                           exploration_fraction=exploration_fraction,
+                    buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
+                           tensorboard_log=tensorboard_log, verbose=1)
+
     elif loss_type == 3:
-        model = DQNReg(MlpPolicy, env, policy_kwargs=policy_kwargs, target_update_interval=target_update_interval, exploration_fraction=exploration_fraction,
-                    buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed, tensorboard_log=tensorboard_log, verbose=1,
-                    loss_type=loss_type, dqn_reg_loss_weight=dqn_reg_loss_weight)
+        model = DQNReg(MlpPolicy, env, policy_kwargs=policy_kwargs, target_update_interval=target_update_interval,
+                       exploration_fraction=exploration_fraction,
+                    buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
+                       tensorboard_log=tensorboard_log, verbose=1,
+                     dqn_reg_loss_weight=dqn_reg_loss_weight)
 
 model.learn(total_timesteps=total_timesteps, log_interval=100, callback=eval_callback)
 
