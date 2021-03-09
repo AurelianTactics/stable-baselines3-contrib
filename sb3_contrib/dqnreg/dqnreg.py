@@ -65,9 +65,9 @@ class DQNReg(DQN):
             device=device,
             create_eval_env=create_eval_env,
             seed=seed,
-            sde_support=False,
+            #sde_support=False,
             optimize_memory_usage=optimize_memory_usage,
-            supported_action_spaces=(gym.spaces.Discrete,),
+            #supported_action_spaces=(gym.spaces.Discrete,),
         )
 
         self.exploration_initial_eps = exploration_initial_eps
