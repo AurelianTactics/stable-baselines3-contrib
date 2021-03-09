@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
 import gym
 import numpy as np
 import torch as th
+from torch.nn import functional as F
 
 from stable_baselines3.dqn import DQN
 from stable_baselines3.dqn.policies import DQNPolicy
@@ -49,26 +50,23 @@ class DQNReg(DQN):
         super(DQNReg, self).__init__(
             policy=policy,
             env=env,
-            # policy=policy,
-            # env=env,
-            # policy_base=DQNPolicy,
-            # learning_rate=learning_rate,
-            # buffer_size=buffer_size,
-            # learning_starts=learning_starts,
-            # batch_size=batch_size,
-            # tau=tau,
-            # gamma=gamma,
-            # train_freq=train_freq,
-            # gradient_steps=gradient_steps,
+            learning_rate=learning_rate,
+            buffer_size=buffer_size,
+            learning_starts=learning_starts,
+            batch_size=batch_size,
+            tau=tau,
+            gamma=gamma,
+            train_freq=train_freq,
+            gradient_steps=gradient_steps,
             # #action_noise=None,  # No action noise
-            # policy_kwargs=policy_kwargs,
-            # tensorboard_log=tensorboard_log,
-            # verbose=verbose,
-            # device=device,
-            # create_eval_env=create_eval_env,
-            # seed=seed,
+            policy_kwargs=policy_kwargs,
+            tensorboard_log=tensorboard_log,
+            verbose=verbose,
+            device=device,
+            create_eval_env=create_eval_env,
+            seed=seed,
             # #sde_support=False,
-            # optimize_memory_usage=optimize_memory_usage,
+            optimize_memory_usage=optimize_memory_usage,
             # #supported_action_spaces=(gym.spaces.Discrete,),
         )
 
@@ -114,7 +112,8 @@ class DQNReg(DQN):
             current_q_values = th.gather(current_q_values, dim=1, index=replay_data.actions.long())
 
             # Compute DQNReg loss
-            loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
+            loss = F.smooth_l1_loss(current_q_values, target_q_values)
+            #loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
             losses.append(loss.item())
 
             # Optimize the policy
