@@ -112,8 +112,8 @@ class DQNReg(DQN):
             current_q_values = th.gather(current_q_values, dim=1, index=replay_data.actions.long())
 
             # Compute DQNReg loss
-            loss = F.smooth_l1_loss(current_q_values, target_q_values)
-            #loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
+            #loss = F.smooth_l1_loss(current_q_values, target_q_values)
+            loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
             losses.append(loss.item())
 
             # Optimize the policy
