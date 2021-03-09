@@ -42,22 +42,22 @@ class DQNReg(DQN):
         verbose: int = 0,
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
-        dqn_reg_loss_weight: float = 0.1,
         _init_setup_model: bool = True,
+        dqn_reg_loss_weight: float = 0.1,
     ):
 
         super(DQNReg, self).__init__(
-            policy,
-            env,
-            DQNPolicy,
-            learning_rate,
-            buffer_size,
-            learning_starts,
-            batch_size,
-            tau,
-            gamma,
-            train_freq,
-            gradient_steps,
+            policy=policy,
+            env=env,
+            policy_base=DQNPolicy,
+            learning_rate=learning_rate,
+            buffer_size=buffer_size,
+            learning_starts=learning_starts,
+            batch_size=batch_size,
+            tau=tau,
+            gamma=gamma,
+            train_freq=train_freq,
+            gradient_steps=gradient_steps,
             #action_noise=None,  # No action noise
             policy_kwargs=policy_kwargs,
             tensorboard_log=tensorboard_log,
@@ -66,7 +66,7 @@ class DQNReg(DQN):
             create_eval_env=create_eval_env,
             seed=seed,
             #sde_support=False,
-            #optimize_memory_usage=optimize_memory_usage,
+            optimize_memory_usage=optimize_memory_usage,
             #supported_action_spaces=(gym.spaces.Discrete,),
         )
 
