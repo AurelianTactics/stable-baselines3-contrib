@@ -66,7 +66,7 @@ class DQNReg(DQN):
             create_eval_env=create_eval_env,
             seed=seed,
             #sde_support=False,
-            optimize_memory_usage=optimize_memory_usage,
+            #optimize_memory_usage=optimize_memory_usage,
             #supported_action_spaces=(gym.spaces.Discrete,),
         )
 
