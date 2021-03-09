@@ -4,8 +4,8 @@ import torch as th
 import time
 import argparse
 
-from sb3_contrib import dqnreg
-from sb3_contrib import dqnclipped
+from sb3_contrib import DQNReg
+from sb3_contrib import DQNClipped
 from stable_baselines3.dqn import MlpPolicy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import EvalCallback
