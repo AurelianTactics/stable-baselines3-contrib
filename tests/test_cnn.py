@@ -81,7 +81,7 @@ def params_should_differ(params, other_params):
 @pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNClipped, DQNReg])
 @pytest.mark.parametrize("share_features_extractor", [True, False])
 def test_feature_extractor_target_net(model_class, share_features_extractor):
-    if model_class == (QRDQN or DQNReg or DQNClipped) and share_features_extractor:
+    if (model_class == QRDQN or model_class == DQNReg or model_class == DQNClipped) and share_features_extractor:
         pytest.skip()
 
     env = FakeImageEnv(screen_height=40, screen_width=40, n_channels=1, discrete=model_class not in {TQC})
