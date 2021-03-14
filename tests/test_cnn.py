@@ -34,6 +34,13 @@ def test_cnn(tmp_path, model_class):
                 features_extractor_kwargs=dict(features_dim=32),
             ),
         )
+    else:
+        kwargs = dict(
+            buffer_size=250,
+            policy_kwargs=dict(features_extractor_kwargs=dict(features_dim=32)),
+            seed=1,
+        )
+
     model = model_class("CnnPolicy", env, **kwargs).learn(250)
 
     obs = env.reset()
@@ -42,7 +49,7 @@ def test_cnn(tmp_path, model_class):
     assert is_vecenv_wrapped(model.get_env(), VecTransposeImage)
 
     # Test stochastic predict with channel last input
-    if model_class == QRDQN:
+    if model_class in {QRDQN, DQNClipped, DQNReg}:
         model.exploration_rate = 0.9
 
     for _ in range(10):
