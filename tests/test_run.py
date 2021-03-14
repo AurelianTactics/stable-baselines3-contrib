@@ -1,6 +1,6 @@
 import pytest
 
-from sb3_contrib import DQNClipped, QRDQN, TQC
+from sb3_contrib import QRDQN, TQC
 
 
 @pytest.mark.parametrize("dqnreg_loss_weight", [0.1, 0.3])
