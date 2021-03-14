@@ -62,8 +62,8 @@ def test_cnn(tmp_path, model_class):
 
 
 def patch_qrdqn_names_(model):
-    # Small hack to make the test work with QRDQN
-    if isinstance(model, QRDQN):
+    # Small hack to make the test work with QRDQN, DQNReg, DQNClipped
+    if isinstance(model, (QRDQN, DQNClipped, DQNReg)):
         model.critic = model.quantile_net
         model.critic_target = model.quantile_net_target
 
