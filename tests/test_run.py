@@ -1,6 +1,37 @@
 import pytest
 
-from sb3_contrib import QRDQN, TQC
+from sb3_contrib import DQNClipped, DQNReg, QRDQN, TQC
+
+
+@pytest.mark.parametrize("dqnreg_loss_weight", [0.1, 0.3])
+def test_dqnreg(dqnreg_loss_weight):
+    # Test DQNReg with different dqnreg loss weight
+    model = DQNReg(
+        "MlpPolicy",
+        "CartPole-v1",
+        policy_kwargs=dict(net_arch=[64, 64]),
+        learning_starts=100,
+        buffer_size=500,
+        learning_rate=3e-4,
+        verbose=1,
+        create_eval_env=True,
+        dqnreg_loss_weight=dqnreg_loss_weight,
+    )
+    model.learn(total_timesteps=300, eval_freq=250)
+
+
+def test_dqnclipped():
+    model = DQNClipped(
+        "MlpPolicy",
+        "CartPole-v1",
+        policy_kwargs=dict(net_arch=[64, 64]),
+        learning_starts=100,
+        buffer_size=500,
+        learning_rate=3e-4,
+        verbose=1,
+        create_eval_env=True,
+    )
+    model.learn(total_timesteps=500, eval_freq=250)
 
 
 @pytest.mark.parametrize("ent_coef", ["auto", 0.01, "auto_0.01"])

@@ -8,10 +8,10 @@ from stable_baselines3.common.identity_env import FakeImageEnv
 from stable_baselines3.common.utils import zip_strict
 from stable_baselines3.common.vec_env import VecTransposeImage, is_vecenv_wrapped
 
-from sb3_contrib import QRDQN, TQC
+from sb3_contrib import DQNClipped, DQNReg, QRDQN, TQC
 
 
-@pytest.mark.parametrize("model_class", [TQC, QRDQN])
+@pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNReg, DQNClipped])
 def test_cnn(tmp_path, model_class):
     SAVE_NAME = "cnn_model.zip"
     # Fake grayscale with frameskip
@@ -78,10 +78,10 @@ def params_should_differ(params, other_params):
         assert not th.allclose(param, other_param)
 
 
-@pytest.mark.parametrize("model_class", [TQC, QRDQN])
+@pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNClipped, DQNReg])
 @pytest.mark.parametrize("share_features_extractor", [True, False])
 def test_feature_extractor_target_net(model_class, share_features_extractor):
-    if model_class == QRDQN and share_features_extractor:
+    if model_class == (QRDQN or DQNReg or DQNClipped) and share_features_extractor:
         pytest.skip()
 
     env = FakeImageEnv(screen_height=40, screen_width=40, n_channels=1, discrete=model_class not in {TQC})
@@ -94,7 +94,7 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
             learning_starts=100,
             policy_kwargs=dict(n_quantiles=25, features_extractor_kwargs=dict(features_dim=32)),
         )
-    if model_class != QRDQN:
+    if model_class != QRDQN and model_class != DQNClipped and model_class != DQNReg:
         kwargs["policy_kwargs"]["share_features_extractor"] = share_features_extractor
 
     model = model_class("CnnPolicy", env, seed=0, **kwargs)
@@ -106,7 +106,7 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
         assert id(model.policy.actor.features_extractor) == id(model.policy.critic.features_extractor)
     else:
         # Check that the objects differ
-        if model_class != QRDQN:
+        if model_class != QRDQN and model_class != DQNReg and model_class != DQNClipped:
             assert id(model.policy.actor.features_extractor) != id(model.policy.critic.features_extractor)
 
     # Critic and target should be equal at the begginning of training

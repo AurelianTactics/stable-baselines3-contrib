@@ -15,7 +15,7 @@ class DQNReg(DQN):
     """
     DQNReg adds DQNReg algorithm from paper: https://arxiv.org/abs/2101.03958
     Is a simple modification of DQN Loss function that replaces the Huber/MSE loss typically used in DQN
-    :param dqn_reg_loss_weight: Weight regularization to use. Defaults to 0.1. Paper hypothesizes that some envs may benefit from tuning this.
+    :param dqnreg_loss_weight: Weight regularization to use. Defaults to 0.1. Paper hypothesizes that some envs may benefit from tuning this.
     """
 
     def __init__(
@@ -43,7 +43,7 @@ class DQNReg(DQN):
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
         _init_setup_model: bool = True,
-        dqn_reg_loss_weight: float = 0.1,
+        dqnreg_loss_weight: float = 0.1,
     ):
 
         super(DQNReg, self).__init__(
@@ -77,7 +77,7 @@ class DQNReg(DQN):
         self.exploration_schedule = None
         self.q_net, self.q_net_target = None, None
         # parameters for DQNReg
-        self.dqn_reg_loss_weight = dqn_reg_loss_weight
+        self.dqnreg_loss_weight = dqnreg_loss_weight
 
         if _init_setup_model:
             self._setup_model()
@@ -108,7 +108,7 @@ class DQNReg(DQN):
             current_q_values = th.gather(current_q_values, dim=1, index=replay_data.actions.long())
 
             # Compute DQNReg loss
-            loss = self.dqn_reg_loss(current_q_values, target_q_values, self.dqn_reg_loss_weight)
+            loss = self.dqnreg_loss(current_q_values, target_q_values, self.dqnreg_loss_weight)
             losses.append(loss.item())
 
             # Optimize the policy
@@ -125,7 +125,7 @@ class DQNReg(DQN):
         logger.record("train/loss", np.mean(losses))
 
     @staticmethod
-    def dqn_reg_loss(current_q, target_q, weight=0.1):
+    def dqnreg_loss(current_q, target_q, weight=0.1):
         """
         Custom loss function per paper: https://arxiv.org/abs/2101.03958
         In DQN, replaces Huber/MSE loss between train and target network

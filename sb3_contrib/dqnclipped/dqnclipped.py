@@ -104,7 +104,7 @@ class DQNClipped(DQN):
             current_q_values = th.gather(current_q_values, dim=1, index=replay_data.actions.long())
 
             # Compute DQNClipped loss
-            loss = self.dqn_clipped_loss(current_q_values, target_q_values, next_q_values, self.gamma)
+            loss = self.dqnclipped_loss(current_q_values, target_q_values, next_q_values, self.gamma)
             losses.append(loss.item())
 
             # Optimize the policy
@@ -121,7 +121,7 @@ class DQNClipped(DQN):
         logger.record("train/loss", np.mean(losses))
 
     @staticmethod
-    def dqn_clipped_loss(current_q, target_q, target_q_a_max, gamma):
+    def dqnclipped_loss(current_q, target_q, target_q_a_max, gamma):
         """
         Custom loss function per paper: https://arxiv.org/abs/2101.03958
         In DQN, replaces Huber/MSE loss between train and target network
