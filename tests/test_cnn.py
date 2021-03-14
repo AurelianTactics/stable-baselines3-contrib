@@ -94,6 +94,9 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
             learning_starts=100,
             policy_kwargs=dict(n_quantiles=25, features_extractor_kwargs=dict(features_dim=32)),
         )
+    else:
+        kwargs = dict(buffer_size=250, learning_starts=100,
+                      policy_kwargs=dict(features_extractor_kwargs=dict(features_dim=32)))
     if model_class != QRDQN and model_class != DQNClipped and model_class != DQNReg:
         kwargs["policy_kwargs"]["share_features_extractor"] = share_features_extractor
 
