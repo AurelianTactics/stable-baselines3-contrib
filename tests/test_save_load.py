@@ -21,7 +21,7 @@ def select_env(model_class: BaseAlgorithm) -> gym.Env:
     """
     Selects an environment with the correct action space as QRDQN, DQNClipped, DQNReg only support discrete action space
     """
-    if model_class == QRDQN or model_class == DQNClipped or model_class == DQNReg:
+    if model_class in {QRDQN, DQNReg, DQNClipped}:
         return IdentityEnv(10)
     else:
         return IdentityEnvBox(10)

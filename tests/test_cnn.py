@@ -59,7 +59,12 @@ def test_cnn(tmp_path, model_class):
 
     model.save(tmp_path / SAVE_NAME)
     del model
-
+    print(tmp_path, SAVE_NAME)
+    tmp_file_name = tmp_path + "/" + SAVE_NAME
+    if ( os.path.isfile(tmp_file_name)):
+        print("file exists at ", tmp_file_name)
+    else:
+        print("file does not exist at ", tmp_file_name)
     model = model_class.load(tmp_path / SAVE_NAME)
 
     # Check that the prediction is the same
@@ -107,7 +112,7 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
     else:
         kwargs = dict(buffer_size=250, learning_starts=100,
                       policy_kwargs=dict(features_extractor_kwargs=dict(features_dim=32)))
-    if model_class != QRDQN and model_class != DQNClipped and model_class != DQNReg:
+    if model_class not in {QRDQN, DQNClipped, DQNReg}:
         kwargs["policy_kwargs"]["share_features_extractor"] = share_features_extractor
 
     model = model_class("CnnPolicy", env, seed=0, **kwargs)
@@ -119,10 +124,10 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
         assert id(model.policy.actor.features_extractor) == id(model.policy.critic.features_extractor)
     else:
         # Check that the objects differ
-        if model_class != QRDQN and model_class != DQNReg and model_class != DQNClipped:
+        if model_class not in {QRDQN, DQNClipped, DQNReg}:
             assert id(model.policy.actor.features_extractor) != id(model.policy.critic.features_extractor)
 
-    # Critic and target should be equal at the begginning of training
+    # Critic and target should be equal at the beginning of training
     params_should_match(model.critic.parameters(), model.critic_target.parameters())
 
     model.learn(200)
@@ -157,7 +162,7 @@ def test_feature_extractor_target_net(model_class, share_features_extractor):
     model.tau = 0.01
     # Special case for QRDQN: target net is updated in the `collect_rollouts()`
     # not the `train()` method
-    if model_class == QRDQN:
+    if model_class in {QRDQN, DQNClipped, DQNReg}:
         model.target_update_interval = 1
         model._on_step()
 
