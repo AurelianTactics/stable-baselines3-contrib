@@ -12,7 +12,7 @@ from stable_baselines3.common.identity_env import FakeImageEnv, IdentityEnv, Ide
 from stable_baselines3.common.utils import get_device
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from sb3_contrib import DQNClipped, DQNReg, QRDQN, TQC
+from sb3_contrib import QRDQN, TQC, DQNClipped, DQNReg
 
 MODEL_LIST = [TQC, QRDQN, DQNReg, DQNClipped]
 

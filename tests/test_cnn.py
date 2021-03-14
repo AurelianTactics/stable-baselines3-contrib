@@ -8,7 +8,7 @@ from stable_baselines3.common.identity_env import FakeImageEnv
 from stable_baselines3.common.utils import zip_strict
 from stable_baselines3.common.vec_env import VecTransposeImage, is_vecenv_wrapped
 
-from sb3_contrib import DQNClipped, DQNReg, QRDQN, TQC
+from sb3_contrib import QRDQN, TQC, DQNClipped, DQNReg
 
 
 @pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNReg, DQNClipped])
