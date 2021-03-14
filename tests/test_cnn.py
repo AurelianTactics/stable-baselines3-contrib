@@ -59,12 +59,13 @@ def test_cnn(tmp_path, model_class):
 
     model.save(tmp_path / SAVE_NAME)
     del model
-    print(tmp_path, SAVE_NAME)
-    tmp_file_name = tmp_path + "/" + SAVE_NAME
-    if ( os.path.isfile(tmp_file_name)):
-        print("file exists at ", tmp_file_name)
-    else:
-        print("file does not exist at ", tmp_file_name)
+    #print(tmp_path, SAVE_NAME)
+    # tmp_file_name = str(tmp_path) + "/" + str(SAVE_NAME)
+    # if ( os.path.isfile(tmp_file_name)):
+    #     print("file exists at ", tmp_file_name)
+    # else:
+    #     print("file does not exist at ", tmp_file_name)
+    assert os.path.isfile(str(tmp_path / SAVE_NAME))
     model = model_class.load(tmp_path / SAVE_NAME)
 
     # Check that the prediction is the same
