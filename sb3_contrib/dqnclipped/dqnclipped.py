@@ -1,10 +1,9 @@
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Optional, Tuple, Type, Union
 
-import gym
 import numpy as np
 import torch as th
 from stable_baselines3.common import logger
-from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
+from stable_baselines3.common.type_aliases import GymEnv, Schedule
 from stable_baselines3.dqn import DQN
 from stable_baselines3.dqn.policies import DQNPolicy
 

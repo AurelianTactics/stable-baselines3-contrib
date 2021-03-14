@@ -1,10 +1,9 @@
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Optional, Tuple, Type, Union
 
-import gym
 import numpy as np
 import torch as th
 from stable_baselines3.common import logger
-from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
+from stable_baselines3.common.type_aliases import GymEnv, Schedule
 from stable_baselines3.dqn import DQN
 from stable_baselines3.dqn.policies import DQNPolicy
 
@@ -13,7 +12,8 @@ class DQNReg(DQN):
     """
     DQNReg adds DQNReg algorithm from paper: https://arxiv.org/abs/2101.03958
     Is a simple modification of DQN Loss function that replaces the Huber/MSE loss typically used in DQN
-    :param dqnreg_loss_weight: Weight regularization to use. Defaults to 0.1. Paper hypothesizes that some envs may benefit from tuning this.
+    :param dqnreg_loss_weight: Weight regularization to use. Defaults to 0.1. Paper hypothesizes that some envs may
+        benefit from tuning this.
     """
 
     def __init__(
