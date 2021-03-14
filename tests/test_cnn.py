@@ -63,9 +63,12 @@ def test_cnn(tmp_path, model_class):
 
 def patch_qrdqn_names_(model):
     # Small hack to make the test work with QRDQN, DQNReg, DQNClipped
-    if isinstance(model, (QRDQN, DQNClipped, DQNReg)):
+    if isinstance(model, QRDQN):
         model.critic = model.quantile_net
         model.critic_target = model.quantile_net_target
+    elif isinstance(model, (DQNClipped, DQNReg)):
+        model.critic = model.q_net
+        model.critic_target = model.q_net_target
 
 
 def params_should_match(params, other_params):
