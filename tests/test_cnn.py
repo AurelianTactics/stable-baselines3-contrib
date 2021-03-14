@@ -7,11 +7,11 @@ import torch as th
 from stable_baselines3.common.identity_env import FakeImageEnv
 from stable_baselines3.common.utils import zip_strict
 from stable_baselines3.common.vec_env import VecTransposeImage, is_vecenv_wrapped
-from stable_baselines3.dqn import DQN
+
 from sb3_contrib import QRDQN, TQC, DQNClipped, DQNReg
 
 
-@pytest.mark.parametrize("model_class", [DQN, TQC, QRDQN, DQNReg, DQNClipped])
+@pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNReg, DQNClipped])
 def test_cnn(tmp_path, model_class):
     SAVE_NAME = "cnn_model.zip"
     # Fake grayscale with frameskip
