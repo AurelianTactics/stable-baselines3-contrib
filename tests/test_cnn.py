@@ -13,7 +13,7 @@ from sb3_contrib import QRDQN, TQC, DQNClipped, DQNReg
 
 @pytest.mark.parametrize("model_class", [TQC, QRDQN, DQNReg, DQNClipped])
 def test_cnn(tmp_path, model_class):
-    SAVE_NAME = "cnn_model.zip"
+    SAVE_NAME = "cnn_model.pkl"
     # Fake grayscale with frameskip
     # Atari after preprocessing: 84x84x1, here we are using lower resolution
     # to check that the network handle it automatically
@@ -59,13 +59,7 @@ def test_cnn(tmp_path, model_class):
 
     model.save(tmp_path / SAVE_NAME)
     del model
-    print(tmp_path, SAVE_NAME)
-    tmp_file_name = str(tmp_path / SAVE_NAME)
-    if ( os.path.isfile(tmp_file_name)):
-        print("file exists at ", tmp_file_name)
-    else:
-        print("file does not exist at ", tmp_file_name)
-    assert os.path.isfile(str(tmp_path / SAVE_NAME))
+
     model = model_class.load(tmp_path / SAVE_NAME)
 
     # Check that the prediction is the same
