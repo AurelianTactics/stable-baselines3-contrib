@@ -77,6 +77,8 @@ class DQNReg(DQN):
         # parameters for DQNReg
         self.dqnreg_loss_weight = dqnreg_loss_weight
 
+        print("testing obs space")
+        self.observation_space = policy.observation_space
         if _init_setup_model:
             self._setup_model()
 
