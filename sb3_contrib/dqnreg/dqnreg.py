@@ -80,7 +80,7 @@ class DQNReg(DQN):
         print("testing obs space")
         #self.observation_space = DQNPolicy.observation_space
         print(policy)
-        print(policy.observation_space)
+        print(vars(policy))
         if _init_setup_model:
             self._setup_model()
 
