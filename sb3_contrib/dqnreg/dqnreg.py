@@ -82,7 +82,11 @@ class DQNReg(DQN):
         print(policy)
         print(vars(policy))
         print(type(policy))
-        print(policy.action_space)
+        #print(policy.action_space)
+
+        attrs = vars(policy)
+        print(', '.join("%s: %s" % item for item in attrs.items()))
+
         if _init_setup_model:
             self._setup_model()
 
