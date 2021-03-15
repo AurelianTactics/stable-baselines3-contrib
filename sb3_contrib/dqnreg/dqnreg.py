@@ -81,6 +81,8 @@ class DQNReg(DQN):
         #self.observation_space = DQNPolicy.observation_space
         print(policy)
         print(vars(policy))
+        print(type(policy))
+        print(policy.action_space)
         if _init_setup_model:
             self._setup_model()
 
