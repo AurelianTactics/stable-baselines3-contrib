@@ -17,13 +17,13 @@ parser.add_argument('--env', default='CartPole-v0')
 parser.add_argument('--seed', default=1, type=int)
 parser.add_argument('--total_timesteps', default=50000, type=int)
 parser.add_argument('--loss_type', default=0, type=int)
-parser.add_argument('--dqn_reg_loss_weight', default=0.1, type=float)
+parser.add_argument('--dqnreg_loss_weight', default=0.1, type=float)
 args = parser.parse_args()
 env_name = args.env
 total_timesteps = args.total_timesteps
 seed = args.seed
 loss_type = args.loss_type
-dqn_reg_loss_weight = args.dqn_reg_loss_weight
+dqnreg_loss_weight = args.dqnreg_loss_weight
 
 time_int = int(time.time())
 model_save_name = "saved_models/dqnclippedreg_{}_{}_{}_{}".format(env_name, loss_type, seed, time_int)
@@ -71,7 +71,7 @@ if env_name == 'MountainCar-v0':
                           exploration_fraction=exploration_fraction,
                           buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
                           tensorboard_log=tensorboard_log, verbose=1,
-                          dqn_reg_loss_weight=dqn_reg_loss_weight,
+                          dqnreg_loss_weight=dqnreg_loss_weight,
                           batch_size=batch_size, learning_rate=learning_rate, gamma=gamma,
                           gradient_steps=gradient_steps,
                           exploration_final_eps=exploration_final_eps)
@@ -88,7 +88,7 @@ else:
                        exploration_fraction=exploration_fraction,
                     buffer_size=buffer_size, train_freq=train_freq, learning_starts=learning_starts, seed=seed,
                        tensorboard_log=tensorboard_log, verbose=1,
-                     dqn_reg_loss_weight=dqn_reg_loss_weight)
+                     dqnreg_loss_weight=dqnreg_loss_weight)
 
 model.learn(total_timesteps=total_timesteps, log_interval=100, callback=eval_callback)
 
